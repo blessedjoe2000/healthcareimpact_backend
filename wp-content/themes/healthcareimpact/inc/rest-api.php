@@ -91,6 +91,7 @@ function get_all_articles($request) {
     return new WP_REST_Response($data, 200);
 }
 /* GET SINGLE ARTICLE START */
+/* GET SINGLE ARTICLE BY ID */
 function get_single_article($request) {
     $article_id = (int) $request['id'];
     error_log("Fetching article with ID: " . $article_id);
@@ -105,6 +106,8 @@ function get_single_article($request) {
     return new WP_REST_Response($formatted_data, 200);
 }
 /* GET SINGLE ARTICLE END */
+
+
 function create_article($request) {
     // (existing code...)
     $article = get_post($article_id);
