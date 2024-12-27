@@ -25,6 +25,7 @@ function register_routes() {
         'callback' => 'get_single_article',
         'permission_callback' => '__return_true'
     ));
+    
 
     register_rest_route('healthcare/v1', '/articles', array(
         'methods' => 'POST',
@@ -35,8 +36,10 @@ function register_routes() {
     register_rest_route('healthcare/v1', '/articles/(?P<id>\d+)', array(
         'methods' => 'PUT',
         'callback' => 'update_article',
-        'permission_callback' => 'is_user_logged_in'
+        'permission_callback' => '__return_true'
     ));
+
+   
 
     error_log('Routes registered successfully');
 }
@@ -113,8 +116,35 @@ function create_article($request) {
     $article = get_post($article_id);
     return new WP_REST_Response(HCMS_Contents::format_article_data($article), 201);
 }
+
+
 function update_article($request) {
-    // (existing code...)
+    $article_id = (int) $request['id'];
+    $article = get_post($article_id);
+
+    if (!$article || $article->post_type !== 'articles') {
+        return new WP_Error('no_article', 'Article not found', array('status' => 404));
+    }
+
+    // Get the current clicks count, default to 0 if not set
+    $current_clicks = (int) get_post_meta($article_id, 'clicks', true);
+
+    // Increment the click count
+    $new_clicks = $current_clicks + 1;
+
+    // Update or add the meta field
+    $update_result = update_post_meta($article_id, 'clicks', $new_clicks);
+
+    if (!$update_result) {
+        return new WP_Error('update_failed', 'Failed to update clicks', array('status' => 500));
+    }
+
+    // Log for debugging
+    error_log("Updated clicks for article ID $article_id: $new_clicks");
+
+    // Return the updated data
     $updated_article = get_post($article_id);
-    return new WP_REST_Response(HCMS_Contents::format_article_data($updated_article), 200);
+    $formatted_data = HCMS_Contents::format_article_data($updated_article);
+
+    return new WP_REST_Response($formatted_data, 200);
 }

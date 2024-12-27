@@ -11,6 +11,10 @@ class HCMS_Contents
         $acf_image = get_field("article_image", $article->ID);
         $featured_image = get_the_post_thumbnail_url($article->ID, 'full');
         $image_url = $acf_image ?: $featured_image ?: null;
+
+        $acf_image = get_field("authors_image", $article->ID);
+        $authors_image = get_the_post_thumbnail_url($article->ID, 'full');
+        $authors_image_url = $acf_image ?: $authors_image ?: null;
         
         // Fetch Spotify list
         $spotify_list = array();
@@ -42,9 +46,10 @@ class HCMS_Contents
             'headline' => get_field('headline', $article->ID),
             'highlights' => get_field('highlights', $article->ID),
             'imageUrl' => $image_url,
-            'author' => get_the_author_meta('display_name', $article->post_author),
-            'imageUrl' => $image_url,
             'mainContent' => $article->post_content,
+            'author' => $article->author,
+            'authors_image' => $authors_image_url,
+            'clicks' => get_field('clicks', $article->ID),
 
         );
     }
@@ -53,6 +58,7 @@ class HCMS_Contents
     // Function to format post data
     public static function format_post_data($post) {
         $featured_image = get_the_post_thumbnail_url($post->ID, 'full');
+        $authors_image = get_the_post_thumbnail_url($post->ID, 'full');
 
         return array(
             'id' => $post->ID,
@@ -67,7 +73,11 @@ class HCMS_Contents
             'image' => $featured_image ?: null,
             'categories' => wp_get_post_categories($post->ID, array('fields' => 'names')),
             'tags' => wp_get_post_tags($post->ID, array('fields' => 'names')),
-            'author' => get_the_author_meta('display_name', $post->post_author),
+            'author' => get_field('author', $post->ID),
+            'authors_image' => $authors_image ?: null,
+            'clicks' => get_field('clicks', $post->ID),
+            
+            
         );
     }
 }
