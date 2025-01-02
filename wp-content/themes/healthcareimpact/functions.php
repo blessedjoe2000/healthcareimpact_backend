@@ -45,9 +45,11 @@ add_action('after_switch_theme', 'healthcare_flush_rewrite_rules');
 
 // CORS Headers
 function add_cors_http_header() {
-    $allowed_origins = defined('NEXT_PUBLIC_FRONTEND_URL') ? NEXT_PUBLIC_FRONTEND_URL : 'http://localhost:3000';
+    $allowed_origins = array(
+        'http://localhost:3000', 'https://www.hcimag.org/'
+    );
 
-    if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN']=== $allowed_origins) {
+    if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
         header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
@@ -64,9 +66,11 @@ add_action('init', 'add_cors_http_header');
 add_action('rest_api_init', 'add_cors_http_header');
 
 function allow_cors_for_images($headers) {
-    $allowed_origins = defined('NEXT_PUBLIC_FRONTEND_URL') ? NEXT_PUBLIC_FRONTEND_URL : 'http://localhost:3000';
+    $allowed_origins = array(
+        'http://localhost:3000', 'https://www.hcimag.org/'
+    );
 
-    if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $allowed_origins) {
+    if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
         $headers['Access-Control-Allow-Origin'] = $_SERVER['HTTP_ORIGIN'];
     }
     return $headers;
