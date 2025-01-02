@@ -99,5 +99,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
+
+// Load environment variables
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0 || strpos($line, '=') === false) {
+            continue;
+        }
+        list($key, $value) = explode('=', $line, 2);
+        putenv(trim($key) . '=' . trim($value));
+    }
+}
+
+// Make sure the frontend URL is accessible globally
+define('NEXT_PUBLIC_FRONTEND_URL', getenv('NEXT_PUBLIC_FRONTEND_URL') ?: 'http://localhost:3000');
+
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
