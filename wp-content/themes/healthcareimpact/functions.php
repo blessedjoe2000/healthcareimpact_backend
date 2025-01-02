@@ -46,7 +46,8 @@ add_action('after_switch_theme', 'healthcare_flush_rewrite_rules');
 // CORS Headers
 function add_cors_http_header() {
     $allowed_origins = array(
-        'http://localhost:3000', 'https://www.hcimag.org/'
+        'http://localhost:3000',
+        'https://www.hcimag.org'
     );
 
     if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
@@ -67,7 +68,8 @@ add_action('rest_api_init', 'add_cors_http_header');
 
 function allow_cors_for_images($headers) {
     $allowed_origins = array(
-        'http://localhost:3000', 'https://www.hcimag.org/'
+        'http://localhost:3000',
+        'https://www.hcimag.org'
     );
 
     if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
@@ -76,4 +78,3 @@ function allow_cors_for_images($headers) {
     return $headers;
 }
 add_filter('wp_headers', 'allow_cors_for_images');
-
